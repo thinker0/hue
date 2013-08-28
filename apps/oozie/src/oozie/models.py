@@ -31,6 +31,7 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
+from django.contrib.contenttypes import generic
 from django.forms.models import inlineformset_factory
 from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext as _, ugettext_lazy as _t
@@ -39,6 +40,7 @@ from desktop.log.access import access_warn
 from desktop.lib import django_mako
 from desktop.lib.exceptions_renderable import PopupException
 from desktop.lib.json_utils import JSONEncoderForHTML
+from desktop.models import Document
 from hadoop.fs.exceptions import WebHdfsException
 
 from hadoop.fs.hadoopfs import Hdfs
@@ -127,6 +129,7 @@ class Job(models.Model):
                                 help_text=_t('Parameters used at the submission time (e.g. market=US, oozie.use.system.libpath=true).'))
   is_trashed = models.BooleanField(default=False, db_index=True, verbose_name=_t('Is trashed'),
                                    help_text=_t('If this job is trashed.'))
+  doc = generic.GenericRelation(Document, related_name='oozie_doc')
 
   objects = JobManager()
   unique_together = ('owner', 'name')
@@ -241,6 +244,8 @@ class WorkflowManager(TrashManager):
     workflow.start = start
     workflow.end = end
     workflow.save()
+
+    Document.objects.link(workflow, owner=workflow.owner, name=workflow.name, description=workflow.description)
 
     self.check_workspace(workflow, fs)
 
