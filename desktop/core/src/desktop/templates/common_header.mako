@@ -148,18 +148,22 @@ from django.utils.translation import ugettext as _
     <div class="navbar-inner">
       <div class="container-fluid">
         <a class="brand nav-tooltip" title="${_('About Hue')}" href="/about"><img src="/static/art/hue-logo-mini.png" /></a>
+
         % if user.is_authenticated():
-        <div id="usernameDropdown" class="btn-group pull-right">
-          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-            <i class="icon-user"></i> ${user.username}
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="userProfile" href="${ url('useradmin.views.edit_user', username=urllib.quote(user.username)) }">${_('Profile')}</a></li>
-            <li class="divider"></li>
-            <li><a href="/accounts/logout/">${_('Sign Out')}</a></li>
-          </ul>
-        </div>
+          <ul class="nav pull-right">
+          <li class="divider-vertical"></li>
+          <li><a href="login.html"><i class="icon-file"></i>&nbsp;FB &nbsp;</a></li>
+          <li><a href="login.html"><i class="icon-list-alt"></i>&nbsp;JB &nbsp;<span class="label label-warning">6</span></a></li>
+          <li class="dropdown">
+            <a href="index.html#" data-toggle="dropdown" class="dropdown-toggle"><i class="icon-cogs"></i>&nbsp;&nbsp;<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="user-account.html"><i class="icon-file"></i>&nbsp;&nbsp;User information</a></li>
+              <li><a href="password.html"><i class="icon-key"></i>&nbsp;&nbsp;Change Password</a></li>
+            </ul>
+          </li>
+          <li><a href="login.html"><i class="icon-lock"></i>&nbsp;&nbsp;Logout</a></li>
+          <li><a href="login.html"><i class="icon-question-sign"></i></a></li>
+        </ul>
         % endif
 
         <div class="nav-collapse">
