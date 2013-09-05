@@ -39,7 +39,7 @@
   -moz-border-radius: 0;
   border-right: 1px solid #E5E5E5;
   margin: 0;
-  padding-bottom: 11px;
+  padding-bottom: 9px;
   padding-top: 11px;
 }
 
@@ -1320,4 +1320,11 @@ a#advanced-btn:hover {
 .modal {
   padding: 25px 20px!important;
   margin-left: -290px!important;
+}
+
+.currentApp {
+  font-size:20px;
+  padding-top:16px;
+  padding-left: 10px;
+  color:#338BB8;
 }

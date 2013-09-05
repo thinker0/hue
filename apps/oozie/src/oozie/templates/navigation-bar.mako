@@ -15,11 +15,15 @@
 ## limitations under the License.
 
 <%!
+  from desktop.views import commonheader, commonfooter
   from django.utils.translation import ugettext as _
 %>
 
 <%namespace name="utils" file="utils.inc.mako" />
-
+<%def name="header(title='', app='oozie', user=None, offset='60px', section='')">
+  ${ commonheader(title, app, user, offset) | n,unicode }
+##  <li class="active"><a href="#" style="margin-top: 4px">${section}</a></li>
+</%def>
 
 <%def name="menubar(section='')">
   <div class="subnav subnav-fixed">

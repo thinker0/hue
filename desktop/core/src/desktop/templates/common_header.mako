@@ -20,18 +20,10 @@ from desktop.lib.i18n import smart_unicode
 from django.utils.translation import ugettext as _
 %>
 
-<%def name="is_selected(section, matcher)">
-  %if section == matcher:
+<%def name="is_selected(selected)">
+  %if selected:
     class="active"
   %endif
-</%def>
-
-<%def name="get_nice_name(apps, section)">
-  % for app in apps:
-    % if section == app.display_name:
-      - ${app.nice_name}
-    % endif
-  % endfor
 </%def>
 
 <%def name="get_title(title)">
@@ -44,7 +36,7 @@ from django.utils.translation import ugettext as _
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Hue ${get_nice_name(apps, section)} ${get_title(title)}</title>
+  <title>Hue - ${current_app.nice_name} ${get_title(title)}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
   <meta name="author" content="">
@@ -139,11 +131,14 @@ from django.utils.translation import ugettext as _
       $(".navbar .nav-tooltip").tooltip({
         delay:0,
         placement:'bottom'});
+
+      $("[rel='tooltip']").tooltip({
+        delay:0,
+        placement:'right'});
     });
   </script>
 </head>
 <body>
-
 <div class="navbar navbar-inverse navbar-fixed-top">
     % if conf.CUSTOM.BANNER_TOP_HTML.get():
     <div id="banner-top" class="banner">
@@ -169,23 +164,56 @@ from django.utils.translation import ugettext as _
 
         <div class="nav-collapse">
           <ul class="nav">
-            <li id="homeIcon" ${is_selected(section, "home")}>
-              <a class="nav-tooltip" title="${ _('Home') }" href="/home"><img src="/static/art/home.png" /></a>
+            <li>
+              <a class="nav-tooltip" title="${current_app.nice_name} Home" href="/${current_app.display_name}"><img src="${current_app.icon_path}" /></a>
             </li>
-            %for app in apps:
-              %if app.icon_path:
-              <li id="${app.display_name}Icon" ${is_selected(section, app.display_name)}>
-                <a class="nav-tooltip" title="${app.nice_name}" href="/${app.display_name}"><img src="${app.icon_path}" /></a>
-              </li>
-              %endif
-            %endfor
+            <li class="currentApp">
+              ${current_app.nice_name}
+            </li>
             <li class="divider-vertical"></li>
-            <li id="checkConfig"></li>
+            %for item in menubar:
+              <li ${is_selected(item['selected'])}><a href="${item['url']}" style="margin-top: 4px">${item['name']}</a></li>
+            %endfor
           </ul>
         </div>
       </div>
     </div>
 </div>
+
+<div class="subnav subnav-fixed">
+    <div class="container-fluid">
+      <ul class="nav nav-pills">
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">${_('Query Editors')} <b class="caret"></b></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">Hive</a></li>
+            <li><a href="#">Impala</a></li>
+            <li><a href="#">Pig</a></li>
+            <li><a href="#">Job Designer</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">${_('Data Browsers')} <b class="caret"></b></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">Metastore Tables</a></li>
+            <li><a href="#">HBase</a></li>
+            <li><a href="#">Sqoop Transfer</a></li>
+            <li><a href="#">Zookeeper</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#" rel="tooltip" title="Oozie">${_('Workflows')} <b class="caret"></b></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">Editor</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#" rel="tooltip" title="Solr Search" style="padding-bottom:11px">${_('Search')}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
 
 <div id="jHueNotify" class="alert hide">
     <button class="close">&times;</button>

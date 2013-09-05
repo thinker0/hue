@@ -20,12 +20,15 @@
   from django.utils.translation import ugettext as _
 %>
 
+<%namespace name="header" file="../header.mako" />
 <%namespace name="layout" file="../navigation-bar.mako" />
 <%namespace name="utils" file="../utils.inc.mako" />
 
 
-${ commonheader(_("Workflows Dashboard"), "oozie", user, "100px") | n,unicode }
-${ layout.menubar(section='dashboard') }
+##${ commonheader(_("Workflows Dashboard"), "oozie", user, "100px") | n,unicode }
+##${ layout.menubar(section='dashboard') }
+
+${ header.main_bar(title=_("Workflows Dashboard"), app="oozie", user=user, offset="100px", section='dashboard') }
 
 
 <div class="container-fluid">

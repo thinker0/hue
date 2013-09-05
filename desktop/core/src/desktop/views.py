@@ -303,18 +303,23 @@ def who_am_i(request):
   time.sleep(sleep)
   return HttpResponse(request.user.username + "\t" + request.fs.user + "\n")
 
-def commonheader(title, section, user, padding="60px"):
+def commonheader(title, section, user, padding="60px", menubar=[]):
   """
   Returns the rendered common header
   """
   if user.is_authenticated():
     apps = appmanager.get_apps(user)
-    apps_list = sorted(apps, key=lambda app: app.menu_index)
+    for app in apps:
+      if section == app.display_name:
+        current_app = app
   else:
-    apps_list = []
+    current_app = {}
+
+  print menubar
 
   return django_mako.render_to_string("common_header.mako", {
-    'apps': apps_list,
+    'current_app': current_app,
+    'menubar': menubar,
     'title': title,
     'section': section,
     'padding': padding,

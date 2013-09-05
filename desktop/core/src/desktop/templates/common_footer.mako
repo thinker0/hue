@@ -33,6 +33,45 @@ from django.template.defaultfilters import escape, escapejs
 
 <script type="text/javascript">
   $(document).ready(function () {
+    // setup disappearing second nav bar
+
+    var _scrollTimeout = -1;
+    var _lastScrollPosition = 0;
+    var _showFromScroll = true;
+    $(window).on("scroll", function () {
+      window.clearTimeout(_scrollTimeout);
+      _scrollTimeout = window.setTimeout(function () {
+        var _currentScrollPosition = $(window).scrollTop();
+        if (!$(".subnav-fixed").is(":animated")) {
+          if (_currentScrollPosition > _lastScrollPosition + 10 && $(".subnav-fixed").css("top") != "0px") {
+            $(".subnav-fixed").animate({ top: "0px"}, 100);
+          }
+          else if (_currentScrollPosition <= _lastScrollPosition - 10 && $(".subnav-fixed").css("top") != "48px") {
+            $(".subnav-fixed").animate({ top: "48px"}, 100);
+          }
+        }
+        _lastScrollPosition = _currentScrollPosition;
+        _showFromScroll = true;
+      }, 30);
+    });
+
+    $(".navbar-fixed-top").on("mouseenter", function () {
+      $(".subnav-fixed").animate({ top: "48px"}, 200);
+      _showFromScroll = false;
+    });
+    var _hideTimeout = -1;
+    $(".subnav-fixed").on("mouseenter", function () {
+      window.clearTimeout(_hideTimeout);
+    });
+    $(".subnav-fixed").on("mouseleave", function () {
+      _hideTimeout = window.setTimeout(function () {
+        if (!_showFromScroll) {
+          $(".subnav-fixed").animate({ top: "0px"}, 200);
+        }
+      }, 1000);
+    });
+
+
     $(".dataTables_wrapper").jHueTableScroller();
     var resetTimeout = -1;
     var pendingRequestsInterval = -1;
