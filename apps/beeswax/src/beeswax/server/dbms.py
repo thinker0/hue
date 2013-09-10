@@ -151,8 +151,14 @@ class Dbms:
     """No samples if it's a view (HUE-526)"""
     if not table.is_view:
       limit = min(100, BROWSE_PARTITIONED_TABLE_LIMIT.get())
-      hql = "SELECT * FROM `%s.%s` LIMIT %s" % (database, table.name, limit)
-      query = hql_query(hql)
+      if table.partition_keys:
+        partition_query = ""
+        partitions = self.get_partitions(database, table, limit)
+        hql = "SELECT * FROM `%s.%s` WHERE %s LIMIT %s" % (database, table.name, partitions[0].where, limit)
+        query = hql_query(hql)
+      else:
+        hql = "SELECT * FROM `%s.%s` LIMIT %s" % (database, table.name, limit)
+        query = hql_query(hql)
       handle = self.execute_and_wait(query, timeout_sec=5.0)
 
       if handle:

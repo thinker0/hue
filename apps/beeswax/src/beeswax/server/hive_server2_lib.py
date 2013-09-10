@@ -548,8 +548,15 @@ class PartitionKeyCompatible:
 class PartitionValueCompatible:
 
   def __init__(self, partition, table):
-    # Parses: ['datehour=2013022516']
-    self.values = [part.split('=')[1] for part in partition]
+    # Parses: ['datehour=2013022516'] or ['month=2011-07/dt=2011-07-01/hr=00']
+    self.values = []
+    for part in partition:
+      parts = part.split('/')
+      for val in parts:
+        self.values.append(val.split('=')[1])
+    #self.values = [part.split('=')[1] for part in partition]
+    self.where = partition[0].replace('=', '=\'').replace('/', '\' AND ') + '\''
+    // TODO Sd Location Partitions.sd_id join SDS.id Table (SDS.location)
     self.sd = type('Sd', (object,), {'location': '%s/%s' % (table.path_location, ','.join(partition)),})
 
 
